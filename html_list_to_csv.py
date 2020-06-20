@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import csv, re
 from bs4 import BeautifulSoup as bs
 htmlFileName = "items.html"
