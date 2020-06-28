@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
-import csv, re
+import csv, re, argparse
 from bs4 import BeautifulSoup as bs
-htmlFileName = "items.html"
-csvFileName = "items.csv"
+
+
+parser = argparse.ArgumentParser(description='Sainsbury\'s order, HTML list to CSV processor')
+parser.add_argument('--input', '-i', type=str, required=True,
+        help='HTML input file. The top level should be <ul>')
+parser.add_argument('--output', '-o', type=str, required=True,
+        help='CSV output file')
+args = parser.parse_args()
+
+htmlFileName = args.input
+csvFileName = args.output
 
 htmlFile = open(htmlFileName, 'r')
 htmlText = htmlFile.read()

@@ -1,9 +1,10 @@
+CSVs = $(wildcard *-items.csv)
+HTMLs = $(wildcard *-items.html)
 clean:
-	rm items.csv items.html
+	rm $(CSVs) $(HTMLs)
 
-items.html:
+sainsburys-items.html tesco-items.html ss-items.html:
 	xclip -o > $@
 
-items.csv: items.html
-	python3 html_list_to_csv.py
-
+%-items.csv: %-items.html
+	python3 $*-h2c.py -i $^ -o $@
