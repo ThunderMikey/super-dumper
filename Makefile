@@ -1,9 +1,13 @@
-CSVs = $(wildcard *-items.csv)
-HTMLs = $(wildcard *-items.html)
-clean:
-	rm $(CSVs) $(HTMLs)
+# get all supported supermarkets
+supas =$(patsubst %.py,%,$(notdir $(wildcard html2list/*)))
 
-%-items.html:
+validCSVs = $(supas:=-items.csv)
+validHTMLs = $(supas:=-items.html)
+
+clean:
+	-rm $(CSVs) $(HTMLs)
+
+${validHTMLs}:
 	xclip -o > $@
 
 %-items.csv: %-items.html
