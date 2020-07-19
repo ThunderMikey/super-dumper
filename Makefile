@@ -5,7 +5,7 @@ validCSVs = $(supas:=-items.csv)
 validHTMLs = $(supas:=-items.html)
 
 clean:
-	-rm $(CSVs) $(HTMLs)
+	-rm -f $(validCSVs) $(validHTMLs)
 
 ${validHTMLs}:
 	xclip -o > $@
