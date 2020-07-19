@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import csv, re, argparse
 from bs4 import BeautifulSoup as bs
+from shared_py.funcs import get_the_only_element
+
+goe = get_the_only_element
 
 
 parser = argparse.ArgumentParser(description='Tesco order, HTML list to CSV processor')
@@ -18,7 +21,7 @@ htmlText = htmlFile.read()
 htmlFile.close()
 
 html = bs(htmlText, "html.parser")
-items = html.find('ul')
+items = goe(html.find_all('ul', class_='product-list'))
 
 def get_the_only_element(l):
     if len(l) != 1:
@@ -29,15 +32,28 @@ def get_the_only_element(l):
 def get_name_price_quantity(row):
     try:
         name = row.find('h3').find('a').text
+    except AttributeError as err:
+        print("can't find name")
+        print(err)
+        print(row)
+        exit(1)
+    try:
         price_match = re.findall(
                 '\d+\.\d+',
                 row.find('div', class_='price-control-wrapper').find('span', class_='value').text
                 )
+    except AttributeError as err:
+        print("can't find price")
+        print(err)
+        print(row)
+        exit(1)
+    try:
         quantity_match = re.findall(
                 '\d+',
-                row.find('div', class_='quantity-label').text
+                row.find('input', class_='product-input')['value']
                 )
     except AttributeError as err:
+        print("can't find quantity")
         print(err)
         print(row)
         exit(1)
