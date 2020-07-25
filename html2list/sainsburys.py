@@ -2,10 +2,9 @@
 import csv, re, argparse
 from bs4 import BeautifulSoup as bs
 
-
 parser = argparse.ArgumentParser(description='Sainsbury\'s order, HTML list to CSV processor')
 parser.add_argument('--input', '-i', type=str, required=True,
-        help='HTML input file. The top level should be <ul>')
+        help='HTML input file.')
 parser.add_argument('--output', '-o', type=str, required=True,
         help='CSV output file')
 args = parser.parse_args()
@@ -18,17 +17,15 @@ htmlText = htmlFile.read()
 htmlFile.close()
 
 html = bs(htmlText, "html.parser")
-items = html.find('ul')
 
-def get_name_price_quantity(row):
-	name = row.find('div', class_='productDescription').find('p').text
-	price = re.findall('\d+\.\d+', row.find('p', class_='cost').text)[0]
-	quantity = re.findall('\d+',
-		row.find('div', class_='productDetails').find('p', string=re.compile("Quantity")).text)[0]
-	item_info = [name, price, quantity]
-	return [info.strip() for info in item_info]
+entries = html.find_all('div', class_='order-details__trolley-summary-item')
+data = []
+for entry in entries:
+        name = entry.find_next('span').text
+        price = entry.find_next('span').find_next('span').text
+        quantity = entry.div.span.text.split(': ')[1]
+        data.append([name, price, quantity])
 
-data = [get_name_price_quantity(row) for row in items.find_all('li')]
 csvFile = open(csvFileName,'w')
 w = csv.writer(csvFile)
 w.writerows(data)
