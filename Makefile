@@ -1,5 +1,5 @@
 # get all supported supermarkets
-supas =$(patsubst %.py,%,$(notdir $(wildcard html2list/*)))
+supas =$(patsubst %.py,%,$(filter %.py,$(notdir $(wildcard src/stores/*))))
 
 validCSVs = $(supas:=-items.csv)
 validHTMLs = $(supas:=-items.html)
