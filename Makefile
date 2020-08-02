@@ -11,4 +11,4 @@ ${validHTMLs}:
 	xclip -o > $@
 
 %-items.csv: %-items.html
-	python3 html2list/$*.py -i $^ -o $@
+	python3 src/main.py -s $* -i $^ -o $@
