@@ -1,5 +1,10 @@
 This reppo is to host scrips for automating online supermarket order scraping.
 
+# How to get the required HTML?
+|      | Asda | Tesco | Waitrose                 | Sainsbury's |
+| ---: | ---  | ---   | ---                      | ---         |
+|      |      |       | My Orders -> Print order |             |
+
 # A comparison between supermarkets
 
 |                               | Asda                                                                  | Tesco                                                                                                                                                | Waitrose                                                                                | Sainsbury's |
