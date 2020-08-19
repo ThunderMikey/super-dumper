@@ -7,12 +7,14 @@ import stores.asda as asda
 #import stores.tesco
 #import stores.sainsburys
 import stores.waitrose as waitrose
+import stores.ocado as ocado
 
 store_funcs = {
         "asda"       : (asda.filter_items             , asda.get_name_price_quantity),
 #        "tesco"      : (tesco.filter_items           , tesco.get_name_price_quantity),
 #        "sainsburys" : (sainsburys.filter_items , sainsburys.get_name_price_quantity),
-        "waitrose"   : (waitrose.filter_items     , waitrose.get_name_price_quantity)
+        "waitrose"   : (waitrose.filter_items     , waitrose.get_name_price_quantity),
+        "ocado"      : (ocado.filter_items,         ocado.get_name_price_quantity)
         }
 
 parser = argparse.ArgumentParser(description='HTML list to CSV processor')
