@@ -1,9 +1,9 @@
 This reppo is to host scrips for automating online supermarket order scraping.
 
 # How to get the required HTML?
-|      | Asda                      | Tesco | Waitrose                 | Sainsbury's | Ocado                            |
-| ---: | ---                       | ---   | ---                      | ---         | ---                              |
-|      | Your Orders -> View Order |       | My Orders -> Print order |             | My Ocado -> Orders -> View order |
+|      | Asda                      | Tesco                   | Waitrose                 | Sainsbury's | Ocado                            |
+| ---: | ---                       | ---                     | ---                      | ---         | ---                              |
+|      | Your Orders -> View Order | My orders -> View items | My Orders -> Print order |             | My Ocado -> Orders -> View order |
 
 # A comparison between supermarkets
 
