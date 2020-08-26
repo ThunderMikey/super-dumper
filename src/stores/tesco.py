@@ -3,13 +3,6 @@ import csv, re, argparse
 from bs4 import BeautifulSoup as bs
 from shared_py.funcs import get_the_only_element
 
-
-def get_the_only_element(l):
-    if len(l) != 1:
-        raise RuntimeError("matched more than one element!\n", l)
-    else:
-        return l[0]
-
 def get_name_price_quantity(row):
     try:
         name = row.find('h3').find('a').text
