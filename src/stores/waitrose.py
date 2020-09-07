@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-import csv, re, argparse
+import json
 from bs4 import BeautifulSoup as bs
 from functools import reduce
 import operator
 from shared_py.funcs import get_the_only_element
+from shared_py.funcs import eprint
 
 gtoe = get_the_only_element
 
@@ -12,43 +13,58 @@ def filter_items(html):
     input: BeatufulSoup html
     output: list of BS objects, each item can be directly processed by get_name_price_quantity()
     """
-    orderDetails = html.find('div', id='order-details')
-    orderBody = orderDetails.find_all('tbody')
-    orderItemLists = map(lambda x: x.find_all('tr'), orderBody)
-    items = reduce(operator.add, orderItemLists)
+    quantityPricesJson = gtoe(html.find_all('script', class_='quantity_prices')).string
+    namesJson = gtoe(html.find_all('script', class_='names')).string
+    quantityPrices = json.loads(quantityPricesJson)
+    names = json.loads(namesJson)
+
+    # construct names dictionary
+    namesDict = {}
+    for i in names['products']:
+        key = i['lineNumber']
+        value = i['name']
+        namesDict[key] = value
+
+    # the same PyObject, there are not multiple duplicated objects because of the assignment
+    items = [(i, namesDict) for i in quantityPrices['orderLines'] ]
+
     return items
 
 
 def get_name_price_quantity(row):
-    tds = row.find_all('td')
-    try:
-        # first td
-        name = tds[0].text
-    except AttributeError as err:
-        print("error in finding name")
-        print(row)
-        exit(1)
-    try:
-        # the 4th td
-        quantity = gtoe(
-                re.findall('\d+',
-                    tds[3].text
-                    )
-                )
-    except AttributeError as err:
-        print("error in finding quantity")
-        print(row)
-        exit(1)
-    try:
-        # the 5th td
-        price = gtoe(
-                re.findall('\d+\.\d+',
-                    tds[4].text)
-                )
-    except AttributeError as err:
-        print("error in finding price")
-        print(row)
-        exit(1)
-    item_info = [name, price, quantity]
-    return [info.strip() for info in item_info]
+    (item, namesDict) = row
+    if item['orderLineStatus'] == 'SUBSTITUTED':
+        name = namesDict[item['lineNumber']] + ' SUBSTITUTED'
+        try:
+            price = gtoe(item['substitutes'])['price']['amount']
+            quantity = gtoe(item['substitutes'])['quantity']['amount']
+        except RuntimeError:
+            eprint("multiple substitutes for a single item: {}".format(name))
+            exit(1)
+    else:
+        name = namesDict[item['lineNumber']]
+        price = item['price']['amount']
+        quantity = item['quantity']['amount']
+
+    adjustments = item['adjustments']
+    if adjustments:
+        try:
+            adj = gtoe(adjustments)
+        except RuntimeError:
+            eprint("can only process one adjustment ATM")
+            eprint("FIXME")
+            exit(1)
+        adjType = adj['adjustmentType']
+        if adjType == 'OFFER':
+            price -= adj['amount']['amount']
+        else:
+            eprint(name)
+            eprint("{} is not an OFFER adjustment".format(adjType))
+            eprint("FIXME")
+            exit(1)
+    else:
+        # no adjustments
+        pass
+
+    return [name, price, quantity]
 
