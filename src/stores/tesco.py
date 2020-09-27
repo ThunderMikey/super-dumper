@@ -21,7 +21,11 @@ def get_name_price_quantity(row):
         print(row)
         exit(1)
     try:
-        name = product.find('h3').find('a').text
+        h3_a = product.find('h3').find('a')
+        if h3_a:
+            name = h3_a.text
+        else:
+            name = product.find('h3').text
     except AttributeError as err:
         print("can't find name")
         print(err)
