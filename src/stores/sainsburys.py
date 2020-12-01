@@ -3,6 +3,6 @@ def filter_items(html):
 
 def get_name_price_quantity(row):
         name = row.find_next('span').text
-        price = row.find_next('span').find_next('span').text.strip('£')
+        price = row.find_next('span').find_next('span').find_next('span').text.strip('£')
         quantity = row.div.span.text.split(': ')[1]
         return [name, price, quantity]
