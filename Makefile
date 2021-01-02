@@ -8,7 +8,7 @@ jsonFiles = asda-response.json
 clean:
 	-rm -f $(validCSVs) $(validHTMLs) $(jsonFiles)
 
-${validHTMLs}:
+asda-response.json ${validHTMLs}:
 	xclip -selection c -o > $@
 
 %-items.csv: %-items.html
