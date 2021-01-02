@@ -19,8 +19,8 @@ def get_name_price_quantity(row):
     if nilPicks:
         assert nilPicks == int(row['quantity'])
         name += " UNAVAILABLE"
-        quantity = 0
-        unitPrice = 0
+        quantity = nilPicks
+        unitPrice = float(row['unit_price'])
     elif subst:
         """
             substituted
