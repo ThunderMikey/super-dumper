@@ -56,7 +56,9 @@ def get_name_price_quantity(row):
             exit(1)
         adjType = adj['adjustmentType']
         if adjType == 'OFFER':
-            price -= adj['amount']['amount']
+            adj_amount = adj['amount']['amount']
+            price -= adj_amount
+            name += " OFFER(-{})".format(adj_amount)
         else:
             eprint(name)
             eprint("{} is not an OFFER adjustment".format(adjType))
