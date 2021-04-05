@@ -11,3 +11,15 @@ def get_the_only_element(l):
 
 def eprint(msg):
     print(msg, file=sys.stderr)
+
+def return_none_if_no_key(e, l):
+    first = l[0]
+    rest = l[1:]
+    if e is None:
+        return None
+    elif first not in e:
+        return None
+    elif len(l) == 1:
+        return e[first]
+    else:
+        return return_none_if_no_key(e[first], rest)

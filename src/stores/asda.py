@@ -4,15 +4,20 @@ from functools import reduce
 import operator
 from shared_py.funcs import get_the_only_element
 from shared_py.funcs import eprint
+from shared_py.funcs import return_none_if_no_key
 
 gtoe = get_the_only_element
 
 def get_name_price_quantity(row):
     try:
-        subst = row['pickedItem']['substitutedItemList']
+        subst = return_none_if_no_key(row, ['pickedItem', 'substitutedItemList'])
         name = row['orderLineCustomAttributes']['webItemDescription']
         nilPicks = int(row['orderLineCustomAttributes']['nilPickQty'])
     except KeyError as e:
+        eprint(e)
+        eprint(row)
+        exit(1)
+    except Exception as e:
         eprint(e)
         eprint(row)
         exit(1)
