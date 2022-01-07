@@ -3,12 +3,12 @@ supas =$(patsubst %.py,%,$(filter %.py,$(notdir $(wildcard src/stores/*))))
 
 validCSVs = $(supas:=-items.csv)
 validHTMLs = $(supas:=-items.html)
-jsonFiles = asda-response.json
+jsonFiles = $(foreach n,asda sainsburys,$n-response.json)
 
 clean:
 	-rm -f $(validCSVs) $(validHTMLs) $(jsonFiles)
 
-asda-response.json ${validHTMLs}:
+${jsonFiles} ${validHTMLs}:
 	xclip -selection c -o > $@
 
 %-items.csv: %-items.html
@@ -25,7 +25,11 @@ waitrose-items.html:
 	exit 1
 
 asda-items.html: asda-response.json
-	echo '<script class="json">' >> $@
+	echo '<script class="json">' > $@
 	cat $< >> $@
 	echo '</script>' >> $@
 
+sainsburys-items.html: sainsburys-response.json
+	echo '<script class="json">' > $@
+	cat $< >> $@
+	echo '</script>' >> $@
