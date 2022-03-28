@@ -25,7 +25,7 @@ def get_name_price_quantity(row):
         assert nilPicks == int(row['quantity'])
         name += " UNAVAILABLE"
         quantity = nilPicks
-        unitPrice = float(row['unit_price'])
+        price = float(row['unit_price']) * quantity
     elif subst:
         """
             substituted
@@ -39,16 +39,15 @@ def get_name_price_quantity(row):
             exit(1)
         name += ' SUBSTITUTED'
         quantity = int(sub['quantity'])
-        unitPrice = float(sub['unitPrice'])
+        price = float(sub['priceCharged'])
     else:
         try:
             quantity = int(row['quantity'])
-            unitPrice = float(row['unit_price'])
+            price = float(row['pickedItem']['adjustedPrice'])
         except KeyError as e:
             eprint(e)
             eprint(row)
             exit(1)
-    price = quantity * unitPrice
     itemInfo = [name, format(price, '.2f'), quantity]
     return itemInfo
 
@@ -62,9 +61,15 @@ def filter_items(html):
     # add delivery item
     # Name: deliver fee
     # Quantity: 1
+    deliveryFeeValue = orderDetail['orderSummary']['deliveryCharge']['currencyAmount']
     deliveryFeeItem = {}
     # no substitutes
-    deliveryFeeItem.update({'pickedItem': {'substitutedItemList': None}})
+    deliveryFeeItem.update({'pickedItem':
+        {
+            'substitutedItemList': None,
+            'adjustedPrice': deliveryFeeValue
+            }
+        })
     # item name
     # no nil picks
     deliveryFeeItem.update(
@@ -76,7 +81,7 @@ def filter_items(html):
                 }
             )
     deliveryFeeItem['quantity'] = 1
-    deliveryFeeItem['unit_price'] = orderDetail['orderSummary']['deliveryCharge']['currencyAmount']
+    deliveryFeeItem['unit_price'] = deliveryFeeValue
 
     items.append(deliveryFeeItem)
     return items
